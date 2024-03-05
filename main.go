@@ -1,7 +1,9 @@
 package main
 
 import (
+	"errors"
 	"os"
+	"strconv"
 
 	"github.com/flutter-webrtc/flutter-webrtc-server/pkg/logger"
 	"github.com/flutter-webrtc/flutter-webrtc-server/pkg/signaler"
@@ -9,6 +11,28 @@ import (
 	"github.com/flutter-webrtc/flutter-webrtc-server/pkg/websocket"
 	"gopkg.in/ini.v1"
 )
+
+var ErrEnvVarEmpty = errors.New("getenv: environment variable empty")
+
+func getenvStr(key string) (string, error) {
+	v := os.Getenv(key)
+	if v == "" {
+		return v, ErrEnvVarEmpty
+	}
+	return v, nil
+}
+
+func getenvInt(key string) (int, error) {
+	s, err := getenvStr(key)
+	if err != nil {
+		return 0, err
+	}
+	v, err := strconv.Atoi(s)
+	if err != nil {
+		return 0, err
+	}
+	return v, nil
+}
 
 func main() {
 
@@ -36,9 +60,8 @@ func main() {
 
 	//sslCert := cfg.Section("general").Key("cert").String()
 	//sslKey := cfg.Section("general").Key("key").String()
-	bindAddress := cfg.Section("general").Key("bind").String()
 
-	port, err := cfg.Section("general").Key("port").Int()
+	port, err := getenvInt("PORT")
 	if err != nil {
 		port = 8086
 	}
@@ -46,7 +69,7 @@ func main() {
 	htmlRoot := cfg.Section("general").Key("html_root").String()
 
 	config := websocket.DefaultConfig()
-	config.Host = bindAddress
+	config.Host = "0.0.0.0"
 	config.Port = port
 	//config.CertFile = sslCert
 	//config.KeyFile = sslKey
