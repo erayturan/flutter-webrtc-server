@@ -74,5 +74,5 @@ func (server *WebSocketServer) Bind(cfg WebSocketServerConfig) {
 	http.Handle("/", http.FileServer(http.Dir(cfg.HTMLRoot)))
 	logger.Infof("Flutter WebRTC Server listening on: %s:%d", cfg.Host, cfg.Port)
 	// http.ListenAndServe(cfg.Host+":"+strconv.Itoa(cfg.Port), nil)
-	panic(http.ListenAndServeTLS(cfg.Host+":"+strconv.Itoa(cfg.Port), cfg.CertFile, cfg.KeyFile, nil))
+	panic(http.ListenAndServe(cfg.Host+":"+strconv.Itoa(cfg.Port), nil))
 }
