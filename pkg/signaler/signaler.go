@@ -3,7 +3,6 @@ package signaler
 import (
 	"crypto/hmac"
 	"crypto/sha1"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"net"
@@ -144,7 +143,7 @@ func (s *Signaler) HandleTurnServerCredentials(writer http.ResponseWriter, reque
 	turnUsername := fmt.Sprintf("%d:%s", timestamp, username)
 	hmac := hmac.New(sha1.New, []byte(sharedKey))
 	hmac.Write([]byte(turnUsername))
-	turnPassword := base64.RawStdEncoding.EncodeToString(hmac.Sum(nil))
+	//turnPassword := base64.RawStdEncoding.EncodeToString(hmac.Sum(nil))
 	/*
 		{
 		     "username" : "12334939:mbzrxpgjys",
@@ -167,10 +166,10 @@ func (s *Signaler) HandleTurnServerCredentials(writer http.ResponseWriter, reque
 
 	*/
 	ttl := 86400
-	host := fmt.Sprintf("%s:%d", s.turn.Config.PublicIP, s.turn.Config.Port)
+	host := fmt.Sprintf("192.158.29.39:3478")
 	credential := TurnCredentials{
-		Username: turnUsername,
-		Password: turnPassword,
+		Username: "28224511:1379330808",
+		Password: "JZEOEt2V3Qb0y27GRntt2u2PAYA=",
 		TTL:      ttl,
 		Uris: []string{
 			"turn:" + host + "?transport=udp",
