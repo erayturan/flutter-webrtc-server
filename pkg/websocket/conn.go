@@ -46,6 +46,10 @@ func (conn *WebSocketConn) ReadMessage() {
 			_, message, err := c.ReadMessage()
 			if err != nil {
 				logger.Warnf("Got error: %v", err)
+
+				if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
+					logger.Errorf("unexpected_close_error: %v", err)
+				}
 				if c, k := err.(*websocket.CloseError); k {
 					conn.Emit("close", c.Code, c.Text)
 				} else {
